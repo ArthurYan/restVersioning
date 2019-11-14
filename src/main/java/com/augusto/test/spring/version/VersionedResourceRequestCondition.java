@@ -6,9 +6,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class VersionedResourceRequestCondition extends AbstractRequestCondition<VersionedResourceRequestCondition> {
     private Logger logger = LoggerFactory.getLogger(VersionedResourceRequestCondition.class);
@@ -44,7 +46,7 @@ public class VersionedResourceRequestCondition extends AbstractRequestCondition<
         newVersions.addAll(other.versions);
         String newMediaType;
         if (StringUtils.hasText(this.acceptedMediaType) && StringUtils.hasText(other.acceptedMediaType)
-                && !this.acceptedMediaType.equals(other.acceptedMediaType)) {
+            && !this.acceptedMediaType.equals(other.acceptedMediaType)) {
             throw new IllegalArgumentException("Both conditions should have the same media type. " + this.acceptedMediaType + " =!= " + other.acceptedMediaType);
         } else if (StringUtils.hasText(this.acceptedMediaType)) {
             newMediaType = this.acceptedMediaType;
@@ -57,20 +59,12 @@ public class VersionedResourceRequestCondition extends AbstractRequestCondition<
     @Override
     public VersionedResourceRequestCondition getMatchingCondition(HttpServletRequest request) {
 
-        String accept = request.getHeader("Accept");
-        Pattern regexPattern = Pattern.compile("(.*)-(\\d+\\.\\d+).*");
-        Matcher matcher = regexPattern.matcher(accept);
-        if (matcher.matches()) {
-            String actualMediaType = matcher.group(1);
-            String version = matcher.group(2);
+        String version = request.getHeader("uaweb");
+        if (!StringUtils.isEmpty(version)) {
             logger.debug("Version={}", version);
-
-            if (acceptedMediaType.startsWith(actualMediaType)) {
-
-                for (VersionRange versionRange : versions) {
-                    if (versionRange.includes(version)) {
-                        return this;
-                    }
+            for (VersionRange versionRange : versions) {
+                if (VersionHolder.match(version, versionRange.getFrom())) {
+                    return this;
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.augusto.test.spring.version;
 
-
 public class VersionRange {
 
     private Version from;
@@ -19,6 +18,10 @@ public class VersionRange {
         }
 
         return false;
+    }
+
+    public Version getFrom() {
+        return from;
     }
 
     @Override

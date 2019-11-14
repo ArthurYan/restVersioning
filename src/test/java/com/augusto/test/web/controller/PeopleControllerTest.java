@@ -42,39 +42,40 @@ public class PeopleControllerTest {
 
     @Test
     public void shouldReturnVersion1ForCallToVersion1() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/people")
-                .accept("application/vnd.app.resource-1.0+json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("firstName", equalTo("John")));
+        mockMvc.perform(MockMvcRequestBuilders.get("/people/10")
+            .header("uaweb", "1.0"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("firstName", equalTo("John")));
     }
 
     @Test
     public void shouldReturnVersion2ForCallToVersion2() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/people")
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/people")
                 .accept("application/vnd.app.resource-2.0+json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("firstName", equalTo("Carl")));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("firstName", equalTo("Carl")));
     }
 
     @Test
     public void shouldReturnUnboundedVersionForCallToVersion32() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/people")
-                .accept("application/vnd.app.resource-3.2+json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("firstName", equalTo("Douglas")));
+            .accept("application/vnd.app.resource-3.2+json"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("firstName", equalTo("Douglas")));
     }
 
     @Test
     public void shouldReturnNotFoundForInvalidVersion() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/people")
-                .accept("application/vnd.app.resource-0.2+json"))
-                .andExpect(status().isNotFound());
+            .accept("application/vnd.app.resource-0.2+json"))
+            .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturnNotFoundIfResourceHeaderIsMissing() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/people")
-                .accept(MediaType.ALL))
-                .andExpect(status().isNotFound());
+            .accept(MediaType.ALL))
+            .andExpect(status().isNotFound());
     }
 }
