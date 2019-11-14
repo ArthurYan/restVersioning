@@ -30,32 +30,32 @@ public class PeopleController {
         return person;
     }
 
-    @RequestMapping(value = {"/people"}, method = RequestMethod.GET)
-    @VersionedResource(from = "2.0", to = "2.0")
-    @ResponseBody
-    public Person getPerson_v2() {
-        logger.info("called /people with v2.0");
-
-        Person person = new Person();
-        person.setFirstName("Carl");
-        person.setLastName("Marx");
-        person.setAge(55);
-
-        return person;
-    }
-
-    @RequestMapping(value = {"/people"}, method = RequestMethod.GET)
-    @VersionedResource(from = "2.1")
-    @ResponseBody
-    public Person getPerson_latest() {
-        logger.info("called /people latest");
-
-        Person person = new Person();
-        person.setFirstName("Douglas");
-        person.setLastName("Adams");
-        person.setAge(42);
-
-        return person;
-    }
+//    @RequestMapping(value = {"/people"}, method = RequestMethod.GET)
+//    @VersionedResource(from = "2.0", to = "2.0")
+//    @ResponseBody
+//    public Person getPerson_v2() {
+//        logger.info("called /people with v2.0");
+//
+//        Person person = new Person();
+//        person.setFirstName("Carl");
+//        person.setLastName("Marx");
+//        person.setAge(55);
+//
+//        return person;
+//    }
+//
+//    @RequestMapping(value = {"/people"}, method = RequestMethod.GET)
+//    @VersionedResource(from = "2.1")
+//    @ResponseBody
+//    public Person getPerson_latest() {
+//        logger.info("called /people latest");
+//
+//        Person person = new Person();
+//        person.setFirstName("Douglas");
+//        person.setLastName("Adams");
+//        person.setAge(42);
+//
+//        return person;
+//    }
 
 }
