@@ -1,28 +1,49 @@
 package com.augusto.test.spring.version;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 public class VersionHolder {
-    private static ConcurrentHashMap<String, List<Version>> API_VERSIONS = new ConcurrentHashMap<>();
+    private static Map<String, List<Version>> API_VERSIONS = new HashMap<>();
 
-    public static void fillApiVersions(VersionedResource methodAnnotation,
-                                       RequestMapping requestMapping) {
-        String url = requestMapping.value()[0];//TODO 需要支持多URL声明，以及param、header等
-        List<Version> versions;
-        if (!API_VERSIONS.contains(url)) {
-            versions = new ArrayList<>();
-            API_VERSIONS.put(url, versions);
+    public static boolean match(String patterns, String version, String from) {
+        List<Version> versions = API_VERSIONS.get(patterns);
+
+        Version requestVersion = new Version(version);
+        Version fromVersion = new Version(from);
+
+        if (requestVersion.compareTo(fromVersion) < 0) {
+            return false;
         } else {
-            versions = API_VERSIONS.get(url);
+            int fromIndex = versions.indexOf(fromVersion);
+
+            if (fromIndex == versions.size() - 1) {
+                return true;
+            }
+
+            Version nextVersion = versions.get(fromIndex + 1);
+            if (requestVersion.compareTo(nextVersion) < 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        versions.add(new Version(methodAnnotation.from()));
     }
 
-    public static boolean match(String version, Version from) {
-        return true;
+    public static void fillApiVersions(String patterns, String from) {
+
+        List<Version> versions;
+        if (!API_VERSIONS.containsKey(patterns)) {
+            versions = new ArrayList<>();
+            API_VERSIONS.put(patterns, versions);
+        } else {
+            versions = API_VERSIONS.get(patterns);
+        }
+        Version fromVersion = new Version(from);
+        versions.add(fromVersion);
+
+        versions.sort(Version::compareTo);
     }
 }

@@ -42,19 +42,19 @@ public class PeopleControllerTest {
 
     @Test
     public void shouldReturnVersion1ForCallToVersion1() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/people/10")
-            .header("uaweb", "1.0"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/arthur/people/10")
+            .header("uaweb", "2.0"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("firstName", equalTo("John")));
+            .andExpect(jsonPath("firstName", equalTo("arthur")));
     }
 
     @Test
     public void shouldReturnVersion2ForCallToVersion2() throws Exception {
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/people")
-                .accept("application/vnd.app.resource-2.0+json"))
+            MockMvcRequestBuilders.get("/arthur/people/10")
+                .header("uaweb", "2.1"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("firstName", equalTo("Carl")));
+            .andExpect(jsonPath("firstName", equalTo("Tim")));
     }
 
     @Test

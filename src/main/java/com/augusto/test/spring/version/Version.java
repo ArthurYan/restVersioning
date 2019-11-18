@@ -33,6 +33,19 @@ public class Version implements Comparable<Version> {
     }
 
     @Override
+    public int hashCode() {
+        return major + minor;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        return this.hashCode() == obj.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "v" + major + "." + minor;
     }
